@@ -49,6 +49,8 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
 
     private static final int EXPAND_INDICATOR_TEXT_VIEW = 1;
 
+    private static final boolean DEFAULT_ELLIPSIZE = false;
+
     private static final int DEFAULT_TOGGLE_TYPE = EXPAND_INDICATOR_IMAGE_BUTTON;
 
     /* The default number of lines */
@@ -67,6 +69,8 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
     private boolean mRelayout;
 
     private boolean mCollapsed = true; // Show short version as default.
+
+    private boolean mEllipsize;
 
     private int mCollapsedHeight;
 
@@ -159,6 +163,10 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
                 // clear the animation flag
                 mAnimating = false;
 
+                if (mCollapsed) {
+                    mTv.setMaxLines(mMaxCollapsedLines);
+                    mTv.setEllipsize(mEllipsize ? TextUtils.TruncateAt.END : null);
+                }
                 // notify the listener
                 if (mListener != null) {
                     mListener.onExpandStateChanged(mTv, !mCollapsed);
@@ -267,7 +275,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mExpandableTextId = typedArray.getResourceId(R.styleable.ExpandableTextView_expandableTextId, R.id.expandable_text);
         mExpandCollapseToggleId = typedArray.getResourceId(R.styleable.ExpandableTextView_expandCollapseToggleId, R.id.expand_collapse);
         mExpandToggleOnTextClick = typedArray.getBoolean(R.styleable.ExpandableTextView_expandToggleOnTextClick, true);
-
+        mEllipsize = typedArray.getBoolean(R.styleable.ExpandableTextView_ellipsize, DEFAULT_ELLIPSIZE);
         mExpandIndicatorController = setupExpandToggleController(getContext(), typedArray);
 
         typedArray.recycle();
@@ -286,6 +294,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         } else {
             mTv.setOnClickListener(null);
         }
+        mTv.setEllipsize(mEllipsize ? TextUtils.TruncateAt.END : null);
         mToggleView = findViewById(mExpandCollapseToggleId);
         mExpandIndicatorController.setView(mToggleView);
         mExpandIndicatorController.changeState(mCollapsed);
