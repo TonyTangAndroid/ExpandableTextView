@@ -43,7 +43,7 @@ public class SampleTextListAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.list_item, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.expandableTextView = (ExpandableTextView) convertView.findViewById(R.id.expand_text_view);
+            viewHolder.expandableTextView = convertView.findViewById(R.id.expand_text_view);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

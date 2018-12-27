@@ -2,6 +2,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:orientation="vertical">
@@ -10,7 +11,7 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="36dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="8dp"
         android:gravity="bottom"
         android:singleLine="true"
         android:textColor="#333333"
@@ -20,6 +21,8 @@
         android:id="@+id/expand_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        expandableTextView:ellipsize="true"
+        expandableTextView:expandToggleType="ImageButton"
         expandableTextView:maxCollapsedLines="4">
 
         <TextView
@@ -37,9 +40,10 @@
             android:id="@id/expand_collapse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right|bottom"
+            android:layout_gravity="end|bottom"
             android:background="@android:color/transparent"
-            android:padding="16dp"/>
+            android:padding="16dp"
+            tools:ignore="ContentDescription"/>
     </com.ms.square.android.expandabletextview.ExpandableTextView>
 
 </LinearLayout>
