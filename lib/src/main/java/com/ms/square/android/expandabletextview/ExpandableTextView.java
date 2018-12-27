@@ -37,7 +37,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-
 public class ExpandableTextView extends LinearLayout implements View.OnClickListener {
 
     private static final int EXPAND_INDICATOR_IMAGE_BUTTON = 0;
@@ -136,10 +135,10 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
                 Drawable collapseDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_collapseIndicator);
 
                 if (expandDrawable == null) {
-                    expandDrawable = getDrawable(context, R.drawable.ic_expand_more_black_12dp);
+                    expandDrawable = getDrawable(context, R.drawable.ic_expand_more_black_24dp);
                 }
                 if (collapseDrawable == null) {
-                    collapseDrawable = getDrawable(context, R.drawable.ic_expand_less_black_12dp);
+                    collapseDrawable = getDrawable(context, R.drawable.ic_expand_less_black_24dp);
                 }
                 expandIndicatorController = new ImageButtonExpandController(expandDrawable, collapseDrawable);
                 break;

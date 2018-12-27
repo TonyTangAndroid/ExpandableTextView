@@ -9,7 +9,7 @@ Feel free to use it all you want in your Android apps provided that you cite thi
 
 Requirements
 -------------
-API Level 8 (Froyo) and above.
+API Level 21 (Froyo) and above.
 
 Setup
 ------
@@ -19,7 +19,7 @@ so you just need to add the followings to your ***build.gradle*** file:
 ```groovy
 
 dependencies {
-    compile 'com.ms-square:expandableTextView:0.1.4'
+    compile 'com.ms-square:expandableTextView:0.1.5'
 }
 
 ```
