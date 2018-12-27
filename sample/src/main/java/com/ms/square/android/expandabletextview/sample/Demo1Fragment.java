@@ -20,10 +20,13 @@ public class Demo1Fragment extends Fragment {
 
         ((TextView) rootView.findViewById(R.id.sample1).findViewById(R.id.title)).setText("Sample 1");
         ((TextView) rootView.findViewById(R.id.sample2).findViewById(R.id.title)).setText("Sample 2");
+        ((TextView) rootView.findViewById(R.id.sample3).findViewById(R.id.title)).setText("Sample 3");
 
         ExpandableTextView expTv1 = rootView.findViewById(R.id.sample1)
                 .findViewById(R.id.expand_text_view);
         ExpandableTextView expTv2 = rootView.findViewById(R.id.sample2)
+                .findViewById(R.id.expand_text_view);
+        ExpandableTextView expTv3 = rootView.findViewById(R.id.sample3)
                 .findViewById(R.id.expand_text_view);
 
         expTv1.setOnExpandStateChangeListener(new ExpandableTextView.OnExpandStateChangeListener() {
@@ -35,6 +38,7 @@ public class Demo1Fragment extends Fragment {
 
         expTv1.setText(getString(R.string.dummy_text1));
         expTv2.setText(getString(R.string.dummy_text2));
+        expTv3.setText(getString(R.string.dummy_text3));
         return rootView;
     }
 }

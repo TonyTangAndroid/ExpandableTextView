@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:orientation="vertical">
@@ -20,8 +19,11 @@
         android:id="@+id/expand_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        expandableTextView:collapseIndicator="@string/collapse"
         expandableTextView:ellipsize="true"
-        expandableTextView:expandToggleType="ImageButton"
+        expandableTextView:expandIndicator="@string/expand"
+        expandableTextView:expandToggleType="TextView"
         expandableTextView:maxCollapsedLines="4">
 
         <TextView
@@ -34,14 +36,14 @@
             android:textColor="#666666"
             android:textSize="16sp"/>
 
-        <ImageButton
+        <TextView
             android:id="@id/expand_collapse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:background="@android:color/transparent"
-            android:padding="16dp"
-            tools:ignore="ContentDescription"/>
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_horizontal_margin"
+            android:textColor="@android:color/holo_green_dark"/>
     </com.ms.square.android.expandabletextview.ExpandableTextView>
 
 </LinearLayout>

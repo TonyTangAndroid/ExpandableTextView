@@ -22,6 +22,10 @@
 
             <include
                 android:id="@+id/sample2"
+                layout="@layout/text_item_2"/>
+
+            <include
+                android:id="@+id/sample3"
                 layout="@layout/text_item"/>
         </LinearLayout>
     </ScrollView>
