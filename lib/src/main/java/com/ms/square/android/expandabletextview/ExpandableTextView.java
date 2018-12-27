@@ -118,9 +118,74 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         init(attrs);
     }
 
+    private static boolean isPostHoneycomb() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+    }
+
+    private static boolean isPostLolipop() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private static void applyAlphaAnimation(View view, float alpha) {
+        if (isPostHoneycomb()) {
+            view.setAlpha(alpha);
+        } else {
+            AlphaAnimation alphaAnimation = new AlphaAnimation(alpha, alpha);
+            // make it instant
+            alphaAnimation.setDuration(0);
+            alphaAnimation.setFillAfter(true);
+            view.startAnimation(alphaAnimation);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private static Drawable getDrawable(@NonNull Context context, @DrawableRes int resId) {
+        Resources resources = context.getResources();
+        if (isPostLolipop()) {
+            return resources.getDrawable(resId, context.getTheme());
+        } else {
+            return resources.getDrawable(resId);
+        }
+    }
+
+    private static int getRealTextViewHeight(@NonNull TextView textView) {
+        int textHeight = textView.getLayout().getLineTop(textView.getLineCount());
+        int padding = textView.getCompoundPaddingTop() + textView.getCompoundPaddingBottom();
+        return textHeight + padding;
+    }
+
+    private static ExpandIndicatorController setupExpandToggleController(@NonNull Context context, TypedArray typedArray) {
+        final int expandToggleType = typedArray.getInt(R.styleable.ExpandableTextView_expandToggleType, DEFAULT_TOGGLE_TYPE);
+        final ExpandIndicatorController expandIndicatorController;
+        switch (expandToggleType) {
+            case EXPAND_INDICATOR_IMAGE_BUTTON:
+                Drawable expandDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_expandIndicator);
+                Drawable collapseDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_collapseIndicator);
+
+                if (expandDrawable == null) {
+                    expandDrawable = getDrawable(context, R.drawable.ic_expand_more_black_12dp);
+                }
+                if (collapseDrawable == null) {
+                    collapseDrawable = getDrawable(context, R.drawable.ic_expand_less_black_12dp);
+                }
+                expandIndicatorController = new ImageButtonExpandController(expandDrawable, collapseDrawable);
+                break;
+            case EXPAND_INDICATOR_TEXT_VIEW:
+                String expandText = typedArray.getString(R.styleable.ExpandableTextView_expandIndicator);
+                String collapseText = typedArray.getString(R.styleable.ExpandableTextView_collapseIndicator);
+                expandIndicatorController = new TextViewExpandController(expandText, collapseText);
+                break;
+            default:
+                throw new IllegalStateException("Must be of enum: ExpandableTextView_expandToggleType, one of EXPAND_INDICATOR_IMAGE_BUTTON or EXPAND_INDICATOR_TEXT_VIEW.");
+        }
+
+        return expandIndicatorController;
+    }
+
     @Override
-    public void setOrientation(int orientation){
-        if(LinearLayout.HORIZONTAL == orientation){
+    public void setOrientation(int orientation) {
+        if (LinearLayout.HORIZONTAL == orientation) {
             throw new IllegalArgumentException("ExpandableTextView only supports Vertical Orientation.");
         }
         super.setOrientation(orientation);
@@ -156,6 +221,7 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
             public void onAnimationStart(Animation animation) {
                 applyAlphaAnimation(mTv, mAnimAlphaStart);
             }
+
             @Override
             public void onAnimationEnd(Animation animation) {
                 // clear animation here to avoid repeated applyTransformation() calls
@@ -172,8 +238,10 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
                     mListener.onExpandStateChanged(mTv, !mCollapsed);
                 }
             }
+
             @Override
-            public void onAnimationRepeat(Animation animation) { }
+            public void onAnimationRepeat(Animation animation) {
+            }
         });
 
         clearAnimation();
@@ -240,15 +308,6 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mListener = listener;
     }
 
-    public void setText(@Nullable CharSequence text) {
-        mRelayout = true;
-        mTv.setText(text);
-        setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
-        clearAnimation();
-        getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        requestLayout();
-    }
-
     public void setText(@Nullable CharSequence text, @NonNull SparseBooleanArray collapsedStatus, int position) {
         mCollapsedStatus = collapsedStatus;
         mPosition = position;
@@ -265,6 +324,15 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
             return "";
         }
         return mTv.getText();
+    }
+
+    public void setText(@Nullable CharSequence text) {
+        mRelayout = true;
+        mTv.setText(text);
+        setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
+        clearAnimation();
+        getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        requestLayout();
     }
 
     private void init(AttributeSet attrs) {
@@ -301,110 +369,11 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         mToggleView.setOnClickListener(this);
     }
 
-    private static boolean isPostHoneycomb() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
-    }
-
-    private static boolean isPostLolipop() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private static void applyAlphaAnimation(View view, float alpha) {
-        if (isPostHoneycomb()) {
-            view.setAlpha(alpha);
-        } else {
-            AlphaAnimation alphaAnimation = new AlphaAnimation(alpha, alpha);
-            // make it instant
-            alphaAnimation.setDuration(0);
-            alphaAnimation.setFillAfter(true);
-            view.startAnimation(alphaAnimation);
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private static Drawable getDrawable(@NonNull Context context, @DrawableRes int resId) {
-        Resources resources = context.getResources();
-        if (isPostLolipop()) {
-            return resources.getDrawable(resId, context.getTheme());
-        } else {
-            return resources.getDrawable(resId);
-        }
-    }
-
-    private static int getRealTextViewHeight(@NonNull TextView textView) {
-        int textHeight = textView.getLayout().getLineTop(textView.getLineCount());
-        int padding = textView.getCompoundPaddingTop() + textView.getCompoundPaddingBottom();
-        return textHeight + padding;
-    }
-
-    private static ExpandIndicatorController setupExpandToggleController(@NonNull Context context, TypedArray typedArray) {
-        final int expandToggleType = typedArray.getInt(R.styleable.ExpandableTextView_expandToggleType, DEFAULT_TOGGLE_TYPE);
-        final ExpandIndicatorController expandIndicatorController;
-        switch (expandToggleType) {
-            case EXPAND_INDICATOR_IMAGE_BUTTON:
-                Drawable expandDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_expandIndicator);
-                Drawable collapseDrawable = typedArray.getDrawable(R.styleable.ExpandableTextView_collapseIndicator);
-
-                if (expandDrawable == null) {
-                    expandDrawable = getDrawable(context, R.drawable.ic_expand_more_black_12dp);
-                }
-                if (collapseDrawable == null) {
-                    collapseDrawable = getDrawable(context, R.drawable.ic_expand_less_black_12dp);
-                }
-                expandIndicatorController = new ImageButtonExpandController(expandDrawable, collapseDrawable);
-                break;
-            case EXPAND_INDICATOR_TEXT_VIEW:
-                String expandText = typedArray.getString(R.styleable.ExpandableTextView_expandIndicator);
-                String collapseText = typedArray.getString(R.styleable.ExpandableTextView_collapseIndicator);
-                expandIndicatorController = new TextViewExpandController(expandText, collapseText);
-                break;
-            default:
-                throw new IllegalStateException("Must be of enum: ExpandableTextView_expandToggleType, one of EXPAND_INDICATOR_IMAGE_BUTTON or EXPAND_INDICATOR_TEXT_VIEW.");
-        }
-
-        return expandIndicatorController;
-    }
-
-    class ExpandCollapseAnimation extends Animation {
-        private final View mTargetView;
-        private final int mStartHeight;
-        private final int mEndHeight;
-
-        public ExpandCollapseAnimation(View view, int startHeight, int endHeight) {
-            mTargetView = view;
-            mStartHeight = startHeight;
-            mEndHeight = endHeight;
-            setDuration(mAnimationDuration);
-        }
-
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            final int newHeight = (int)((mEndHeight - mStartHeight) * interpolatedTime + mStartHeight);
-            mTv.setMaxHeight(newHeight - mMarginBetweenTxtAndBottom);
-            if (Float.compare(mAnimAlphaStart, 1.0f) != 0) {
-                applyAlphaAnimation(mTv, mAnimAlphaStart + interpolatedTime * (1.0f - mAnimAlphaStart));
-            }
-            mTargetView.getLayoutParams().height = newHeight;
-            mTargetView.requestLayout();
-        }
-
-        @Override
-        public void initialize( int width, int height, int parentWidth, int parentHeight ) {
-            super.initialize(width, height, parentWidth, parentHeight);
-        }
-
-        @Override
-        public boolean willChangeBounds( ) {
-            return true;
-        }
-    }
-
     public interface OnExpandStateChangeListener {
         /**
          * Called when the expand/collapse animation has been finished
          *
-         * @param textView - TextView being expanded/collapsed
+         * @param textView   - TextView being expanded/collapsed
          * @param isExpanded - true if the TextView has been expanded
          */
         void onExpandStateChanged(TextView textView, boolean isExpanded);
@@ -459,6 +428,40 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         @Override
         public void setView(View toggleView) {
             mTextView = (TextView) toggleView;
+        }
+    }
+
+    class ExpandCollapseAnimation extends Animation {
+        private final View mTargetView;
+        private final int mStartHeight;
+        private final int mEndHeight;
+
+        public ExpandCollapseAnimation(View view, int startHeight, int endHeight) {
+            mTargetView = view;
+            mStartHeight = startHeight;
+            mEndHeight = endHeight;
+            setDuration(mAnimationDuration);
+        }
+
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            final int newHeight = (int) ((mEndHeight - mStartHeight) * interpolatedTime + mStartHeight);
+            mTv.setMaxHeight(newHeight - mMarginBetweenTxtAndBottom);
+            if (Float.compare(mAnimAlphaStart, 1.0f) != 0) {
+                applyAlphaAnimation(mTv, mAnimAlphaStart + interpolatedTime * (1.0f - mAnimAlphaStart));
+            }
+            mTargetView.getLayoutParams().height = newHeight;
+            mTargetView.requestLayout();
+        }
+
+        @Override
+        public void initialize(int width, int height, int parentWidth, int parentHeight) {
+            super.initialize(width, height, parentWidth, parentHeight);
+        }
+
+        @Override
+        public boolean willChangeBounds() {
+            return true;
         }
     }
 }

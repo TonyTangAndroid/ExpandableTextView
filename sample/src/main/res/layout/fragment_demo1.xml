@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#dddddd"
-    tools:context="com.ms.square.android.expandabletextview.sample.DemoActivity">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#dddddd"
+                tools:context="com.ms.square.android.expandabletextview.sample.DemoActivity">
 
     <ScrollView
         android:id="@+id/scroll_view"
@@ -17,11 +17,11 @@
 
             <include
                 android:id="@+id/sample1"
-                layout="@layout/text_item" />
+                layout="@layout/text_item"/>
 
             <include
                 android:id="@+id/sample2"
-                layout="@layout/text_item" />
+                layout="@layout/text_item"/>
         </LinearLayout>
     </ScrollView>
 

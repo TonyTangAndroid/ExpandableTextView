@@ -17,7 +17,7 @@ public class SampleTextListAdapter extends BaseAdapter {
     private final String[] sampleStrings;
 
     public SampleTextListAdapter(Context context) {
-        mContext  = context;
+        mContext = context;
         mCollapsedStatus = new SparseBooleanArray();
         sampleStrings = mContext.getResources().getStringArray(R.array.sampleStrings);
     }
@@ -55,7 +55,7 @@ public class SampleTextListAdapter extends BaseAdapter {
     }
 
 
-    private static class ViewHolder{
+    private static class ViewHolder {
         ExpandableTextView expandableTextView;
     }
 }
