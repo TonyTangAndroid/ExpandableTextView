@@ -1,18 +1,9 @@
 local.properties
-
+.idea
 # Gradle
 .gradle
-build/
-
+build
 # Android Studio
 *.iml
-!.idea/runConfigurations/*
-.idea/*.xml
-.idea/.name
-.idea/copyright/
-.idea/libraries/
-.idea/scopes/
-.idea/inspectionProfiles/
-
 # Other
 .DS_Store
